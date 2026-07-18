@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gadis QS - TikTok Shop</title>
+  
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========= RESET & GLOBAL ========= */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8f8f8; color: #161823; }
+    .page { display: none; min-height: 100vh; background: #fff; padding-bottom: 80px; }
+    .page.active { display: block; }
+
+    /* ========= HEADER ========= */
+    .tt-header { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid #e3e3e4; }
+    .tt-topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; }
+    .tt-back { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
+    .tt-search { flex: 1; margin: 0 10px; background: #f1f1f2; border-radius: 8px; padding: 8px 12px; font-size: 14px; border: none; font-family: 'Inter'; outline: none; }
+    .tt-icons { display: flex; gap: 16px; font-size: 20px; }
+
+    /* ========= SHOP INFO ========= */
+    .tt-shop { display: flex; align-items: center; gap: 6px; padding: 12px; border-bottom: 1px solid #f1f1f2; }
+    .tt-shop-name { font-weight: 600; font-size: 14px; }
+    .tt-badge { background: #00B5E2; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+
+    /* ========= SLIDER GAMBAR ========= */
+    .tt-slider { background: #000; }
+    .tt-slides { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .tt-slides::-webkit-scrollbar { display: none; }
+    .tt-slides img { width: 100%; height: 380px; object-fit: cover; flex-shrink: 0; scroll-snap-align: start; }
+
+    /* ========= HARGA ========= */
+    .tt-price-box { padding: 12px; background: #fff; border-bottom: 1px solid #f1f1f2; }
+    .tt-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .tt-discount { background: #fe2c55; color: #fff; font-size: 12px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .tt-price { font-size: 24px; font-weight: 800; color: #161823; }
+    .tt-oldprice { font-size: 14px; color: #8a8a8e; text-decoration: line-through; }
+
+    /* ========= JUDUL PRODUK ========= */
+    .tt-product { padding: 12px; border-bottom: 1px solid #f1f1f2; }
+    .tt-title { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 8px; white-space: pre-line; }
+    .tt-stats { font-size: 13px; color: #8a8a8e; display: flex; gap: 12px; }
+
+    /* ========= BANNER WA ========= */
+    .tt-banner { padding: 12px; background: #fff; }
+    .tt-banner a { position: relative; display: block; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .tt-banner img { width: 100%; display: block; }
+    .tt-wabutton { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: #25D366; color: #fff; font-weight: 700; font-size: 14px; padding: 10px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; width: 90%; justify-content: center; }
+
+    /* ========= PILIHAN PAKET ========= */
+    .tt-paket-box { padding: 12px; background: #fff; margin: 8px 0; }
+    .tt-paket-title { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
+    .tt-paket { border: 2px solid #e3e3e4; padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+    .tt-paket.active { border-color: #fe2c55; background: #fff0f3; }
+    .tt-paket-nama { font-weight: 700; margin-bottom: 4px; }
+    .tt-paket-hadiah { font-size: 13px; color: #666; }
+
+    /* ========= DESKRIPSI & SPESIFIKASI ========= */
+    .tt-desc { background: #fff; margin-top: 8px; padding: 12px; border-top: 8px solid #f8f8f8; border-bottom: 8px solid #f8f8f8; }
+    .tt-desc-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+    .tt-desc-content { font-size: 14px; line-height: 1.7; color: #333; white-space: pre-line; }
+    .tt-spec { padding: 12px; background: #fff; margin-bottom: 8px; }
+    .tt-spec-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f1f2; font-size: 14px; }
+    .tt-spec-label { color: #8a8a8e; }
+
+    /* ========= BOTTOM BUTTON ========= */
+    .tt-bottom { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e3e3e4; display: flex; padding: 8px 12px; gap: 8px; z-index: 99; }
+    .tt-chat { flex: 1; background: #f1f1f2; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; font-family: 'Inter'; cursor: pointer; }
+    .tt-buy { flex: 2; background: #fe2c55; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 15px; font-family: 'Inter'; padding: 14px; cursor: pointer; }
+
+    /* ========= HALAMAN CHECKOUT ========= */
+    #checkoutPage { background: #f8f8f8; }
+    .tt-checkout-card { background: #fff; margin-bottom: 10px; padding: 12px; }
+    .tt-checkout-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+    .tt-product-row { display: flex; gap: 10px; }
+    .tt-product-row img { width: 70px; height: 70px; border-radius: 6px; object-fit: cover; }
+    .tt-checkout-bottom { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; padding: 12px; border-top: 1px solid #e3e3e4; }
+    .tt-checkout-btn { width: 100%; background: #fe2c55; color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 700; font-family: 'Inter'; cursor: pointer; }
+
+    /* ========= FORM ALAMAT ========= */
+    .tt-address-form { display: none; padding: 12px; background: #fff; margin-bottom: 10px; }
+    .tt-address-form.active { display: block; }
+    .tt-input { width: 100%; padding: 12px; border: 1px solid #e3e3e4; border-radius: 8px; margin-bottom: 10px; font-family: 'Inter'; font-size: 14px; outline: none; }
+    .tt-save-addr { width: 100%; background: #fe2c55; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 15px; font-weight: 700; font-family: 'Inter'; cursor: pointer; }
+    .tt-address-box { background: #fff; padding: 12px; margin-bottom: 10px; display: none; }
+    .tt-address-box.active { display: block; }
+    .tt-address-name { font-weight: 700; margin-bottom: 4px; }
+    .tt-address-detail { font-size: 14px; color: #666; line-height: 1.5; }
+
+    /* ========= HALAMAN PEMBAYARAN ========= */
+    #bayarPage { background: #f8f8f8; }
+    .tt-pay-card { background: #fff; margin: 10px; padding: 16px; border-radius: 8px; }
+    .tt-pay-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .tt-pay-btn { width: 100%; background: #fe2c55; color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 700; font-family: 'Inter'; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- ========= HALAMAN 1: PRODUK ========= -->
+  <div id="produkPage" class="page active">
+    <div class="tt-header">
+      <div class="tt-topbar">
+        <div class="tt-back">←</div>
+        <input class="tt-search" placeholder="Cari di TikTok Shop">
+        <div class="tt-icons"><span>🛒</span><span>⋯</span></div>
+      </div>
+    </div>
+
+    <div class="tt-shop">
+      <div class="tt-shop-name">Gadis QS Official</div>
+      <div class="tt-badge">✓ Official</div>
+    </div>
+
+    <div class="tt-slider">
+      <div class="tt-slides">
+        <img src="https://i.supaimg.com/9dd0407e-c134-4311-9a7b-f76a14bf8bc4/cfa97d97-517a-4b0a-9667-fe3d845e6bd8.jpg">
+        <img src="https://i.supaimg.com/8d8883ae-ac11-44bf-8b32-ec2d5b440257/71e1599b-3d82-4eb0-8a7e-4d89d17da704.jpg">
+      </div>
+    </div>
+
+        </>
+      </>
+    </>
+
+    <div class="tt-price-box">
+      <div class="tt-price-row">
+        <div class="tt-discount">-99%</div>
+        <div class="tt-price" id="hargaUtama">RM300</div>
+        <div class="tt-oldprice">RM350.00</div>
+      </div>
+    </div>
+
+    <div class="tt-product">
+      <div class="tt-title" id="judulProduk">TAWARAN MEGA GADIS QS: BELI & MENANG KERETA IDAMAN!
+Pakej Combo RM300 - Layak Honda HR-V + RM100,000</div>
+      <div class="tt-stats">★ 4.6 | 568 Terjual | Penghantaran Percuma</div>
+    </div>
+
+    <div class="tt-paket-box">
+      <div class="tt-paket-title">Pilih Pakej:</div>
+      <div class="tt-paket active" onclick="pilihPaket(300, this)">
+        <div class="tt-paket-nama">Pakej Combo RM300</div>
+        <div class="tt-paket-hadiah">Layak Honda HR-V + RM100,000</div>
+      </div>
+      <div class="tt-paket" onclick="pilihPaket(200, this)">
+        <div class="tt-paket-nama">Pakej Sedang RM200</div>
+        <div class="tt-paket-hadiah">Layak RM80,000 + Toyota Alphard</div>
+      </div>
+      <div class="tt-paket" onclick="pilihPaket(150, this)">
+        <div class="tt-paket-nama">Pakej Biasa RM150</div>
+        <div class="tt-paket-hadiah">Layak RM50,000</div>
+      </div>
+    </div>
+
+    <div class="tt-desc">
+      <div class="tt-desc-title">Penerangan Produk</div>
+      <div class="tt-desc-content">Impian anda untuk memiliki kereta baharu dan wang tunai kini boleh jadi kenyataan! 
+
+Hanya dengan membuat pembelian perfume extrait Gadis QS Original, anda secara automatik layak dan berhak untuk membawa pulang:
+
+🚘 Hadiah Utama: Sebuah kereta Honda HR-V yang serba mewah!
+💰 Wang Tunai: Sebanyak RM100,000 menanti anda!</div>
+    </div>
+
+    <div class="tt-spec">
+      <div class="tt-desc-title">Spesifikasi Produk</div>
+      <div class="tt-spec-row"><span class="tt-spec-label">Jenama</span><span>Gadis QS</span></div>
+      <div class="tt-spec-row"><span class="tt-spec-label">Kandungan</span><span id="isiBotol">10 Botol x 30ml</span></div>
+      <div class="tt-spec-row"><span class="tt-spec-label">Jenis</span><span>Extrait De Parfum</span></div>
+    </div>
+
+    <div class="tt-bottom">
+      <button class="tt-chat">Chat</button>
+      <button class="tt-buy" id="btnBeli" onclick="showPage('checkoutPage')">Beli Sekarang RM300</button>
+    </div>
+  </div>
+
+  <!-- ========= HALAMAN 2: CHECKOUT ========= -->
+  <div id="checkoutPage" class="page">
+    <div class="tt-header">
+      <div class="tt-topbar">
+        <div class="tt-back" onclick="showPage('produkPage')">←</div>
+        <div style="font-weight:600;">Checkout</div>
+        <div></div>
+      </div>
+    </div>
+
+    <div id="addressSaved" class="tt-address-box">
+      <div class="tt-checkout-title">Alamat Penghantaran</div>
+      <div class="tt-address-name" id="addrName">-</div>
+      <div class="tt-address-detail" id="addrDetail">-</div>
+      <div style="color:#fe2c55; font-size:13px; margin-top:8px; cursor:pointer;" onclick="toggleAddressForm()">Tukar Alamat</div>
+    </div>
+
+    <div id="addressEmpty" class="tt-checkout-card">
+      <div class="tt-checkout-title">Alamat Penghantaran</div>
+      <div style="color:#fe2c55; cursor:pointer; font-weight:600;" onclick="toggleAddressForm()">+ Tambah Alamat Baru</div>
+    </div>
+
+    <div id="addressForm" class="tt-address-form">
+      <div class="tt-checkout-title">Alamat Baru</div>
+      <input class="tt-input" id="namaAlamat" placeholder="Nama Penerima">
+      <input class="tt-input" id="telpAlamat" placeholder="Nombor Telefon">
+      <input class="tt-input" id="alamatLengkap" placeholder="Alamat Lengkap">
+      <button class="tt-save-addr" onclick="saveAddress()">Simpan Alamat</button>
+    </div>
+
+    <div class="tt-checkout-card">
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">
+        <div class="tt-shop-name">Gadis QS Official</div>
+        <div class="tt-badge">✓ Official</div>
+      </div>
+      <div class="tt-product-row">
+        <img src="https://i.supaimg.com/9dd0407e-c134-4311-9a7b-f76a14bf8bc4/cfa97d97-517a-4b0a-9667-fe3d845e6bd8.jpg">
+        <div style="flex:1;">
+          <div style="font-weight:500; margin-bottom:4px;" id="namaPakejCheckout">Pakej Combo RM300</div>
+          <div style="font-weight:700; color:#fe2c55; margin-top:4px;" id="hargaCheckout">RM300</div>
+        </div>
+        <div style="font-weight:600;">x1</div>
+      </div>
+    </div>
+
+    <div class="tt-checkout-card">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Subtotal Produk</span><span id="subtotal">RM300</span></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Penghantaran</span><span style="color:#00a000;">Percuma</span></div>
+      <div style="display:flex; justify-content:space-between; font-weight:700; font-size:16px;"><span>Jumlah Bayaran</span><span style="color:#fe2c55;" id="totalBayar">RM300</span></div>
+    </div>
+
+    <div class="tt-checkout-bottom">
+      <button class="tt-checkout-btn" id="btnCheckout" onclick="lanjutBayar()">Buat Pesanan RM300</button>
+    </div>
+  </div>
+
+  <!-- ========= HALAMAN 3: PEMBAYARAN ========= -->
+  <div id="bayarPage" class="page">
+    <div class="tt-header">
+      <div class="tt-topbar">
+        <div class="tt-back" onclick="showPage('checkoutPage')">←</div>
+        <div style="font-weight:600;">Pembayaran</div>
+        <div></div>
+      </div>
+    </div>
+
+    <div class="tt-pay-card">
+      <div class="tt-pay-title">Gadis QS Official <span style="color:#00B5E2;">✓</span></div>
+      <div style="font-weight:600; margin-bottom:8px;">Pesanan Anda:</div>
+      <div style="font-size:14px; margin-bottom:10px;">
+        <span id="ringkasanPakej">Pakej Combo RM300</span> - <span style="color:#fe2c55; font-weight:700;" id="ringkasanHarga">RM300</span>
+      </div>
+      <div style="font-weight:600; margin:15px 0 8px;">Alamat Penghantaran:</div>
+      <div id="finalAddress" style="font-size:14px; color:#666; margin-bottom:15px;">Belum ada alamat</div>
+      <button class="tt-pay-btn" onclick="kirimWhatsApp()">Sahkan & Hantar Pesanan</button>
+    </div>
+  </div>
+
+  <script>
+    // ========= VARIABLE GLOBAL =========
+    let hargaDipilih = 300;
+    let namaPaketDipilih = "Pakej Combo RM300";
+    let dataAlamat = { nama: '', telp: '', alamat: '' };
+
+    // ========= FUNGSI PILIH PAKET =========
+    function pilihPaket(harga, el) {
+      document.querySelectorAll('.tt-paket').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      hargaDipilih = harga;
+      
+      if (harga == 300) { 
+        namaPaketDipilih = "Pakej Combo RM300"; 
+        document.getElementById('isiBotol').innerText = "10 Botol x 30ml"; 
+      }
+      if (harga == 200) { 
+        namaPaketDipilih = "Pakej Sedang RM200"; 
+        document.getElementById('isiBotol').innerText = "6 Botol x 30ml"; 
+      }
+      if (harga == 150) { 
+        namaPaketDipilih = "Pakej Biasa RM150"; 
+        document.getElementById('isiBotol').innerText = "4 Botol x 30ml"; 
+      }
+      
+      document.getElementById('hargaUtama').innerText = "RM" + harga;
+      document.getElementById('judulProduk').innerText = `TAWARAN MEGA GADIS QS\n${namaPaketDipilih}`;
+      document.getElementById('btnBeli').innerText = `Beli Sekarang RM${harga}`;
+    }
+
+    // ========= FUNGSI PINDAH HALAMAN =========
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (id === 'checkoutPage') {
+        document.getElementById('namaPakejCheckout').innerText = namaPaketDipilih;
+        document.getElementById('hargaCheckout').innerText = "RM" + hargaDipilih;
+        document.getElementById('subtotal').innerText = "RM" + hargaDipilih;
+        document.getElementById('totalBayar').innerText = "RM" + hargaDipilih;
+        document.getElementById('btnCheckout').innerText = `Buat Pesanan RM${hargaDipilih}`;
+      }
+      if (id === 'bayarPage') {
+        document.getElementById('finalAddress').innerText = dataAlamat.nama ? `${dataAlamat.nama} - ${dataAlamat.telp}\n${dataAlamat.alamat}` : 'Belum ada alamat';
+        document.getElementById('ringkasanPakej').innerText = namaPaketDipilih;
+        document.getElementById('ringkasanHarga').innerText = "RM" + hargaDipilih;
+      }
+    }
+
+    // ========= FUNGSI ALAMAT =========
+    function toggleAddressForm() { 
+      document.getElementById('addressForm').classList.toggle('active'); 
+    }
+
+    function saveAddress() {
+      const nama = document.getElementById('namaAlamat').value.trim();
+      const telp = document.getElementById('telpAlamat').value.trim();
+      const alamat = document.getElementById('alamatLengkap').value.trim();
+      if (!nama || !telp || !alamat) { alert('Sila lengkapkan alamat'); return; }
+      
+      dataAlamat = { nama, telp, alamat };
+      document.getElementById('addrName').innerText = nama;
+      document.getElementById('addrDetail').innerText = `${telp}\n${alamat}`;
+      document.getElementById('addressSaved').classList.add('active');
+      document.getElementById('addressEmpty').style.display = 'none';
+      document.getElementById('addressForm').classList.remove('active');
+    }
+
+    function lanjutBayar() {
+      if (!dataAlamat.nama) { alert('Sila tambah alamat penghantaran terlebih dahulu'); toggleAddressForm(); return; }
+      showPage('bayarPage');
+    }
+
+    // ========= FUNGSI KIRIM WA =========
+    function kirimWhatsApp() {
+      if (!dataAlamat.nama) { alert('Sila lengkapkan alamat'); return; }
+      const nomorTujuan = "601159433893"; // GANTI NOMOR KAMU
+      const pesan = `PESAN BARU TIKTOK SHOP\nPakej: ${namaPaketDipilih} - RM${hargaDipilih}\nNama: ${dataAlamat.nama}\nTelefon: ${dataAlamat.telp}\nAlamat: ${dataAlamat.alamat}`;
+      window.open(`https://wa.me/${nomorTujuan}?text=${encodeURIComponent(pesan)}`, "_blank");
+    }
+  </script>
+</body>
+</html>
