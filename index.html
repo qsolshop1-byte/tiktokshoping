@@ -334,7 +334,7 @@ Hanya dengan membuat pembelian perfume extrait Gadis QS Original, anda secara au
     // ========= FUNGSI KIRIM WA =========
     function kirimWhatsApp() {
       if (!dataAlamat.nama) { alert('Sila lengkapkan alamat'); return; }
-      const nomorTujuan = "601159433893"; // GANTI NOMOR KAMU
+      const nomorTujuan = "601159184575"; // GANTI NOMOR KAMU
       const pesan = `PESAN BARU TIKTOK SHOP\nPakej: ${namaPaketDipilih} - RM${hargaDipilih}\nNama: ${dataAlamat.nama}\nTelefon: ${dataAlamat.telp}\nAlamat: ${dataAlamat.alamat}`;
       window.open(`https://wa.me/${nomorTujuan}?text=${encodeURIComponent(pesan)}`, "_blank");
     }
